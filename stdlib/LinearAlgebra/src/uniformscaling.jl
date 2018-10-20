@@ -103,7 +103,7 @@ for (t1, t2) in ((:UnitUpperTriangular, :UpperTriangular),
                  (:UnitLowerTriangular, :LowerTriangular))
     @eval begin
         function (+)(UL::$t1, J::UniformScaling)
-            ULnew = copy_oftype(UL.data, Base._return_type(+, Tuple{eltype(UL), typeof(J)}))
+            ULnew = copy_oftype(UL.data, Base._unsafe_return_type(+, Tuple{eltype(UL), typeof(J)}))
             for i in axes(ULnew, 1)
                 ULnew[i,i] = one(ULnew[i,i]) + J
             end
@@ -114,7 +114,7 @@ end
 
 function (+)(A::AbstractMatrix, J::UniformScaling)
     checksquare(A)
-    B = copy_oftype(A, Base._return_type(+, Tuple{eltype(A), typeof(J)}))
+    B = copy_oftype(A, Base._unsafe_return_type(+, Tuple{eltype(A), typeof(J)}))
     @inbounds for i in axes(A, 1)
         B[i,i] += J
     end
@@ -123,7 +123,7 @@ end
 
 function (-)(J::UniformScaling, A::AbstractMatrix)
     checksquare(A)
-    B = convert(AbstractMatrix{Base._return_type(+, Tuple{eltype(A), typeof(J)})}, -A)
+    B = convert(AbstractMatrix{Base._unsafe_return_type(+, Tuple{eltype(A), typeof(J)})}, -A)
     @inbounds for i in axes(A, 1)
         B[i,i] += J
     end

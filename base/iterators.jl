@@ -1054,7 +1054,7 @@ else
     # Try to find an appropriate type for the (value, state tuple),
     # by doing a recursive unrolling of the iteration protocol up to
     # fixpoint.
-    approx_iter_type(itrT::Type) = _approx_iter_type(itrT, Base._return_type(iterate, Tuple{itrT}))
+    approx_iter_type(itrT::Type) = _approx_iter_type(itrT, Base._unsafe_return_type(iterate, Tuple{itrT}))
     # Not actually called, just passed to return type to avoid
     # having to typesubtract
     function doiterate(itr, valstate::Union{Nothing, Tuple{Any, Any}})
@@ -1065,7 +1065,7 @@ else
     function _approx_iter_type(itrT::Type, vstate::Type)
         vstate <: Union{Nothing, Tuple{Any, Any}} || return Any
         vstate <: Union{} && return Union{}
-        nextvstate = Base._return_type(doiterate, Tuple{itrT, vstate})
+        nextvstate = Base._unsafe_return_type(doiterate, Tuple{itrT, vstate})
         return (nextvstate <: vstate ? vstate : Any)
     end
 end

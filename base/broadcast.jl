@@ -610,7 +610,7 @@ broadcastable(x) = collect(x)
 broadcastable(::Union{AbstractDict, NamedTuple}) = throw(ArgumentError("broadcasting over dictionaries and `NamedTuple`s is reserved"))
 
 ## Computation of inferred result type, for empty and concretely inferred cases only
-_broadcast_getindex_eltype(bc::Broadcasted) = Base._return_type(bc.f, eltypes(bc.args))
+_broadcast_getindex_eltype(bc::Broadcasted) = Base._unsafe_return_type(bc.f, eltypes(bc.args))
 _broadcast_getindex_eltype(A) = eltype(A)  # Tuple, Array, etc.
 
 eltypes(::Tuple{}) = Tuple{}
@@ -619,7 +619,7 @@ eltypes(t::Tuple{Any,Any}) = Tuple{_broadcast_getindex_eltype(t[1]), _broadcast_
 eltypes(t::Tuple) = Tuple{_broadcast_getindex_eltype(t[1]), eltypes(tail(t)).types...}
 
 # Inferred eltype of result of broadcast(f, args...)
-combine_eltypes(f, args::Tuple) = Base._return_type(f, eltypes(args))
+combine_eltypes(f, args::Tuple) = Base._unsafe_return_type(f, eltypes(args))
 
 ## Broadcasting core
 
